@@ -64,7 +64,7 @@ engine_settings:
   no_graphics: true
 environment_parameters: null
 checkpoint_settings:
-  run_id: easy6
+  run_id: easy3
   initialize_from: null
   load_model: false
   resume: false
