@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 115
+  controlID: 127
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -442,7 +442,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 06fbffff
+      m_ExpandedIDs: 18fbffff9c650000c4650000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -835,9 +835,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -0.039051227, y: 2.2830186, z: 13.717591}
+    m_Target: {x: -0.38310975, y: -1.0913149, z: 33.157425}
     speed: 2
-    m_Value: {x: -0.039051227, y: 2.2830186, z: 13.717591}
+    m_Value: {x: -0.38310975, y: -1.0913149, z: 33.157425}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -887,9 +887,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 5.975461
+    m_Target: 7.1258483
     speed: 2
-    m_Value: 5.975461
+    m_Value: 7.1258483
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -959,7 +959,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/UI
+    - Assets/Fonts
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -967,16 +967,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/UI
+  - Assets/Fonts
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\kamei\Documents\TCUTowerBattle
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 58}
-    m_SelectedIDs: fa660000
-    m_LastClickedID: 26362
-    m_ExpandedIDs: 00000000c4660000c6660000e266000000ca9a3b
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: e6660000
+    m_LastClickedID: 26342
+    m_ExpandedIDs: 00000000c2660000de66000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1004,7 +1004,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000c4660000c6660000
+    m_ExpandedIDs: 00000000c2660000c4660000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

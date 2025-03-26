@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     public float rotationAngle = 10f;
     public TextMeshProUGUI win;
     public TextMeshProUGUI lose;
+    public TextMeshProUGUI Operate;
     public TextMeshProUGUI MyTurn;
     public TextMeshProUGUI AITurn;
     private GraphicRaycaster raycaster;
@@ -71,6 +72,9 @@ public class GameManager : MonoBehaviour
     private float dragThresholdTime = 0.3f;
     private float clickedTimeThreshold = 15.0f;
     private float clickedTimeCounter = 0.0f;
+    private float rotationCooldown = 0.1f;
+    private float rotationTimer = 0f;
+
 
 
 
@@ -99,6 +103,7 @@ public class GameManager : MonoBehaviour
         title.gameObject.SetActive(false);
         win.gameObject.SetActive(false);
         lose.gameObject.SetActive(false);
+        Operate.gameObject.SetActive(true);
         MyTurn.gameObject.SetActive(false);
         AITurn.gameObject.SetActive(false);
         
@@ -113,6 +118,8 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        HandleKeyboardRotation();
+
         // トレーニング時は両方AIが行動
         if (isTrainingMode)
         {
@@ -148,6 +155,7 @@ public class GameManager : MonoBehaviour
         title.gameObject.SetActive(false);
         win.gameObject.SetActive(false);
         lose.gameObject.SetActive(false);
+        Operate.gameObject.SetActive(true);
 
         ClearAllPieces();
 
@@ -178,6 +186,7 @@ public class GameManager : MonoBehaviour
         // ゲームオーバーUIを表示
         retry.gameObject.SetActive(true);
         title.gameObject.SetActive(true);
+        Operate.gameObject.SetActive(false);
 
         if(isPlayerTurn)
         {
@@ -540,7 +549,7 @@ public class GameManager : MonoBehaviour
             newPosition.x = Mathf.Clamp(newPosition.x, leftBoundary, rightBoundary);
             currentPiece.transform.position = newPosition;
 
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 currentPiece.DropPiece();
                 rotateButton.interactable = false;
@@ -620,6 +629,24 @@ public class GameManager : MonoBehaviour
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Collider2D pieceCollider = piece.GetComponent<Collider2D>();
         return pieceCollider != null && pieceCollider.OverlapPoint(mousePosition);
+    }
+    private void HandleKeyboardRotation()
+    {
+        rotationTimer += Time.deltaTime;
+
+        if (rotationTimer >= rotationCooldown)
+        {
+            if (Input.GetKey(KeyCode.E))
+            {
+                RotatePiece2();
+                rotationTimer = 0f;
+            }
+            else if (Input.GetKey(KeyCode.Q))
+            {
+                RotatePiece();
+                rotationTimer = 0f;
+            }
+        }
     }
 
     // ===============================
