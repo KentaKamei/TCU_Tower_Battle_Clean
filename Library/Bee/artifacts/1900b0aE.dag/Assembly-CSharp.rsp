@@ -386,14 +386,14 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.32f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.32f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
-"Assets/Scripts/BGMcontroller.cs"
-"Assets/Scripts/ButtonClickSound.cs"
-"Assets/Scripts/GameManager.cs"
-"Assets/Scripts/piececontroller.cs"
-"Assets/Scripts/StageGenetator.cs"
-"Assets/Scripts/TitleManager.cs"
-"Assets/Scripts/TitleSceneManager.cs"
-"Assets/Scripts/TowerAgent.cs"
+"Assets/Scripts/Agents/TowerAgent.cs"
+"Assets/Scripts/Gamemanagement/GameManager.cs"
+"Assets/Scripts/Gamemanagement/StageGenetator.cs"
+"Assets/Scripts/Pieces/piececontroller.cs"
+"Assets/Scripts/TitleManagement/TitleManager.cs"
+"Assets/Scripts/TitleManagement/TitleSceneManager.cs"
+"Assets/Scripts/UI/BGMcontroller.cs"
+"Assets/Scripts/UI/ButtonClickSound.cs"
 -langversion:9.0
 /deterministic
 /optimize+

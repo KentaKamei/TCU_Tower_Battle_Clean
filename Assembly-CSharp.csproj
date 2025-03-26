@@ -64,14 +64,14 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.32f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\TitleManager.cs" />
-    <Compile Include="Assets\Scripts\TitleSceneManager.cs" />
-    <Compile Include="Assets\Scripts\TowerAgent.cs" />
-    <Compile Include="Assets\Scripts\ButtonClickSound.cs" />
-    <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\StageGenetator.cs" />
-    <Compile Include="Assets\Scripts\piececontroller.cs" />
-    <Compile Include="Assets\Scripts\BGMcontroller.cs" />
+    <Compile Include="Assets\Scripts\Gamemanagement\GameManager.cs" />
+    <Compile Include="Assets\Scripts\UI\BGMcontroller.cs" />
+    <Compile Include="Assets\Scripts\TitleManagement\TitleSceneManager.cs" />
+    <Compile Include="Assets\Scripts\Pieces\piececontroller.cs" />
+    <Compile Include="Assets\Scripts\Gamemanagement\StageGenetator.cs" />
+    <Compile Include="Assets\Scripts\Agents\TowerAgent.cs" />
+    <Compile Include="Assets\Scripts\TitleManagement\TitleManager.cs" />
+    <Compile Include="Assets\Scripts\UI\ButtonClickSound.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
