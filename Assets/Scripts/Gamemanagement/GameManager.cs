@@ -293,6 +293,18 @@ public class GameManager : MonoBehaviour
         }
         allPieces.Clear();
     }
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip); // 指定された音声を再生
+            Debug.Log($"再生中の音声: {clip.name}");
+        }
+        else
+        {
+            Debug.LogWarning("AudioSourceまたはAudioClipが設定されていません");
+        }
+    }
 
     // ===============================
     // AIターン処理
@@ -572,113 +584,6 @@ public class GameManager : MonoBehaviour
             dragStartPosition = dragCurrentPosition;
         }
     }
-
-    // ===============================
-    // ピース生成・状態確認
-    // ===============================
-    public void SpawnPiece()
-    {
-        if (TCUPrefabs == null || TCUPrefabs.Count == 0)
-        {
-            Debug.LogError("No piece prefabs available to spawn.");
-            return;
-        }
-
-        // ランダムにプレハブを選択
-        int randomIndex = Random.Range(0, TCUPrefabs.Count);
-        GameObject selectedPrefab = TCUPrefabs[randomIndex];
-
-        // タワーの高さを取得し、オフセットを追加
-        float towerHeight = CalculateTowerHeight();
-        if (yOffset - towerHeight < 4.0f)
-        {
-            yOffset += 2.0f;
-            // カメラの位置も更新
-            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y + 2.0f, mainCamera.transform.position.z);
-        }
-
-        Vector3 spawnPosition = new Vector3(0, yOffset, 0);
-
-        Debug.Log("spawn");
-
-        // ピースを生成
-        GameObject piece = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
-        currentPiece = piece.GetComponent<PieceController>();
-
-        // プレハブのインデックスからピースの種類を設定
-        if (randomIndex == 0)
-        {
-            currentPiece.pieceType = PieceType.Tcu1;
-        }
-        else if (randomIndex == 1)
-        {
-            currentPiece.pieceType = PieceType.Tcu2;
-        }
-        else if (randomIndex == 2)
-        {
-            currentPiece.pieceType = PieceType.Tcu3;
-        }
-        else if (randomIndex == 3)
-        {
-            currentPiece.pieceType = PieceType.Tcu4;
-        }
-        else if (randomIndex == 4)
-        {
-            currentPiece.pieceType = PieceType.Tcu5;
-        }
-
-        // 新しいピースをリストに追加
-        allPieces.Add(currentPiece);
-
-         if (towerAgent != null)
-        {
-            towerAgent.currentPiece = currentPiece;
-            towerAgent.currentPieceRigidbody = currentPiece.GetComponent<Rigidbody2D>();
-            towerAgent.currentPieceTransform = currentPiece.transform;
-            //Debug.Log("TowerAgent's currentPiece updated to: " + currentPiece.name);
-        }
-
-
-        isPlayerTurn = !isPlayerTurn;
-        if(isPlayerTurn)
-        {
-            // 回転ボタンを有効化
-            rotateButton.interactable = true;
-            rotateButton2.interactable = true;
-        }
-        else
-        {
-            hasRequestedAction = false;
-        }
-        
-    }
-    public bool AreAllPiecesStationary()
-    {
-        foreach (var piece in allPieces)
-        {
-            if (!piece.IsStationary())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    public float CalculateTowerHeight()
-    {
-        float maxHeight = stageGenerator.baseY;
-        foreach (var piece in allPieces)
-        {
-            if (piece.transform.position.y > maxHeight)
-            {
-                maxHeight = piece.transform.position.y;
-            }
-        }
-        return maxHeight;
-    }
-
-    // ===============================
-    // ピース回転・入力
-    // ===============================
     public void RotatePiece()
     {
         if (currentPiece != null && currentPiece.enabled)
@@ -716,17 +621,84 @@ public class GameManager : MonoBehaviour
         Collider2D pieceCollider = piece.GetComponent<Collider2D>();
         return pieceCollider != null && pieceCollider.OverlapPoint(mousePosition);
     }
-    private void PlaySound(AudioClip clip)
+
+    // ===============================
+    // ピース生成・状態確認
+    // ===============================
+    public void SpawnPiece()
     {
-        if (audioSource != null && clip != null)
+        if (TCUPrefabs == null || TCUPrefabs.Count == 0)
         {
-            audioSource.PlayOneShot(clip); // 指定された音声を再生
-            Debug.Log($"再生中の音声: {clip.name}");
+            Debug.LogError("No piece prefabs available to spawn.");
+            return;
+        }
+
+        // タワーの高さを取得し、オフセットを追加
+        float towerHeight = CalculateTowerHeight();
+        if (yOffset - towerHeight < 4.0f)
+        {
+            yOffset += 2.0f;
+            // カメラの位置も更新
+            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y + 2.0f, mainCamera.transform.position.z);
+        }
+        Vector3 spawnPosition = new Vector3(0, yOffset, 0);
+
+        // ランダムにプレハブを選択
+        int randomIndex = Random.Range(0, TCUPrefabs.Count);
+        GameObject selectedPrefab = TCUPrefabs[randomIndex];
+
+        // ピースを生成
+        GameObject piece = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
+        currentPiece = piece.GetComponent<PieceController>();
+
+        // プレハブのインデックスからピースの種類を設定
+        currentPiece.pieceType = (PieceType)randomIndex;
+
+        // 新しいピースをリストに追加
+        allPieces.Add(currentPiece);
+
+         if (towerAgent != null)
+        {
+            towerAgent.currentPiece = currentPiece;
+            towerAgent.currentPieceRigidbody = currentPiece.GetComponent<Rigidbody2D>();
+            towerAgent.currentPieceTransform = currentPiece.transform;
+        }
+
+        isPlayerTurn = !isPlayerTurn;
+        if(isPlayerTurn)
+        {
+            // 回転ボタンを有効化
+            rotateButton.interactable = true;
+            rotateButton2.interactable = true;
         }
         else
         {
-            Debug.LogWarning("AudioSourceまたはAudioClipが設定されていません");
+            hasRequestedAction = false;
         }
+        
+    }
+    public bool AreAllPiecesStationary()
+    {
+        foreach (var piece in allPieces)
+        {
+            if (!piece.IsStationary())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public float CalculateTowerHeight()
+    {
+        float maxHeight = stageGenerator.baseY;
+        foreach (var piece in allPieces)
+        {
+            if (piece.transform.position.y > maxHeight)
+            {
+                maxHeight = piece.transform.position.y;
+            }
+        }
+        return maxHeight;
     }
 
 }
