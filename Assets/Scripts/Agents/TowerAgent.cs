@@ -74,7 +74,6 @@ public class TowerAgent : Agent
         return shape;
     }
 
-    // 難易度ごとにオーバーライド
     public void HandlePieceStable(float prevHeight, float newHeight, int pieceCount)
     {
         string difficulty = gameManager.trainingDifficulty;

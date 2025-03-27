@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
     private float previousHighestPoint;
     private float currentHighestPoint;
     public static string selectedDifficulty = "training";
-    public string trainingDifficulty = "easy";  
+    public string trainingDifficulty = "easy";  //トレーニング対象の難易度。手動で変える
 
 
     // ===============================
