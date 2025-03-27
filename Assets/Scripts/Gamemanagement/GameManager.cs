@@ -555,6 +555,11 @@ public class GameManager : MonoBehaviour
     }
     private void HandleKeyboardRotation()
     {
+        // 回転ボタンが無効なら、キーボード回転も無効
+        if (!rotateButton.interactable || currentPiece == null || currentPiece.IsClicked)
+        {
+            return;
+        }
         rotationTimer += Time.deltaTime;
 
         if (rotationTimer >= rotationCooldown)
