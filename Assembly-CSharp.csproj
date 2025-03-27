@@ -71,7 +71,6 @@
     <Compile Include="Assets\Scripts\Agents\TowerAgent.cs" />
     <Compile Include="Assets\Scripts\TitleManagement\TitleManager.cs" />
     <Compile Include="Assets\Scripts\UI\ButtonClickSound.cs" />
-    <Compile Include="Assets\Scripts\Agents\TowerAgent_Training.cs" />
     <Compile Include="Assets\Scripts\Gamemanagement\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>

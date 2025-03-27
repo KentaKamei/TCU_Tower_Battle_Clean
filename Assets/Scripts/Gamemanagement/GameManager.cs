@@ -80,9 +80,6 @@ public class GameManager : MonoBehaviour
     private float rotationCooldown = 0.1f;
     private float rotationTimer = 0f;
 
-
-
-
     void Start()
     {
 
@@ -91,12 +88,10 @@ public class GameManager : MonoBehaviour
             case "easy":
             case "normal":
             case "hard":
-                towerAgent = gameObject.AddComponent<TowerAgent_Training>();
                 SetInferenceModel(selectedDifficulty);
                 break;
 
             case "training":
-                towerAgent = gameObject.AddComponent<TowerAgent_Training>();
                 SetTrainingModel(trainingDifficulty); // ← 自分で切り替える用
                 break;
         }        
@@ -140,10 +135,17 @@ public class GameManager : MonoBehaviour
     void SetInferenceModel(string difficulty)
     {
         var param = towerAgent.GetComponent<BehaviorParameters>();
-        param.Model = Resources.Load<NNModel>($"Models/{difficulty}");
+        var model = Resources.Load<NNModel>($"Models/{difficulty}");
+
+        if (model == null)
+        {
+            Debug.LogError($"モデルの読み込みに失敗しました: Resources/Models/{difficulty}.nn が存在するか確認してください。");
+            return;
+        }
+
+        param.Model = model;
         param.BehaviorType = BehaviorType.InferenceOnly;
     }
-
     void SetTrainingModel(string difficulty)
     {
         var param = towerAgent.GetComponent<BehaviorParameters>();
@@ -153,10 +155,8 @@ public class GameManager : MonoBehaviour
         Debug.Log($"トレーニング対象のモデル: {difficulty}");
         
     }
-
     void Update()
     {
-        HandleKeyboardRotation();
 
         // トレーニング時は両方AIが行動
         if (isTrainingMode)
@@ -168,6 +168,8 @@ public class GameManager : MonoBehaviour
             if (isPlayerTurn)
             {
                 HandlePlayerTurn();  // プレイヤーのターン処理
+                HandleKeyboardRotation();
+
             }
             else
             {
