@@ -14,21 +14,18 @@ public class ButtonClickSound : MonoBehaviour
         {
             // PlayClickSoundをOnClickイベントに登録
             button.onClick.AddListener(PlayClickSound);
-            Debug.Log("PlayClickSoundをOnClickイベントに追加しました");
         }
         else
         {
-            Debug.Log("Buttonコンポーネントが見つかりません");
+            //Debug.Log("Buttonコンポーネントが見つかりません");
         }
     }
 
     public void PlayClickSound()
     {
-        Debug.Log("PlayClickSoundが呼び出されました");
         if (audioSource != null && clickSound != null)
         {
             audioSource.PlayOneShot(clickSound);
-            Debug.Log("クリック音再生");
         }
         else
         {

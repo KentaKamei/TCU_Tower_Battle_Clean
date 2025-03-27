@@ -13,9 +13,7 @@ public class TitleScreenManager : MonoBehaviour
 
     private IEnumerator LoadSceneWithDelay()
     {
-        Debug.Log("遅延開始: " + delayBeforeSceneLoad + " 秒");
         yield return new WaitForSeconds(delayBeforeSceneLoad); // 指定した秒数待機
         SceneManager.LoadScene("GameScene");
-        Debug.Log("シーン切り替え完了");
     }
 }

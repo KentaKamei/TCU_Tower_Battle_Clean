@@ -105,8 +105,6 @@ public class GameManager : MonoBehaviour
         stageGenerator = FindObjectOfType<StageGenerator>();
         isPlayerTurn = true;
 
-        // ML-Agentsがトレーニング中かどうかを確認
-        isTrainingMode = Academy.Instance.IsCommunicatorOn;
 
         if (TCUPrefabs == null || TCUPrefabs.Count == 0)
         {
@@ -157,6 +155,8 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        // ML-Agentsがトレーニング中かどうかを確認
+        isTrainingMode = Academy.Instance.IsCommunicatorOn;
 
         // トレーニング時は両方AIが行動
         if (isTrainingMode)
@@ -306,7 +306,6 @@ public class GameManager : MonoBehaviour
         if (audioSource != null && clip != null)
         {
             audioSource.PlayOneShot(clip); // 指定された音声を再生
-            Debug.Log($"再生中の音声: {clip.name}");
         }
         else
         {
@@ -321,7 +320,6 @@ public class GameManager : MonoBehaviour
     {
         MyTurn.gameObject.SetActive(false);
         AITurn.gameObject.SetActive(true);
-
 
         // 現在のピースが存在し、まだ落下していない場合のみAIに行動をリクエスト
         if (towerAgent != null && currentPiece != null && !currentPiece.IsClicked)
@@ -630,7 +628,8 @@ public class GameManager : MonoBehaviour
         {
             hasRequestedAction = false;
         }
-        
+        clickedTimeCounter = 0.0f; // タイマーをリセット
+
     }
     public bool AreAllPiecesStationary()
     {

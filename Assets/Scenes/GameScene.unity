@@ -4674,7 +4674,7 @@ MonoBehaviour:
   towerAgent: {fileID: 1467794268}
   isTrainingMode: 0
   hasRequestedAction: 0
-  trainingDifficulty: easy
+  trainingDifficulty: normal
   isPlayerTurn: 0
 --- !u!4 &2124257786
 Transform:
