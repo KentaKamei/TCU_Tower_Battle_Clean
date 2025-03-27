@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using Unity.MLAgents; 
+using Unity.MLAgents.Policies;  
+using Unity.Barracuda;          
+
 
 public enum PieceType { Tcu1, Tcu2, Tcu3, Tcu4, Tcu5 }
 
@@ -61,6 +64,8 @@ public class GameManager : MonoBehaviour
     private float previousHighestPoint;
     private float currentHighestPoint;
     public static string selectedDifficulty = "training";
+    public string trainingDifficulty = "easy";  
+
 
     // ===============================
     // プレイヤー操作関連
@@ -80,12 +85,29 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+
+        switch (selectedDifficulty)
+        {
+            case "easy":
+            case "normal":
+            case "hard":
+                towerAgent = gameObject.AddComponent<TowerAgent_Training>();
+                SetInferenceModel(selectedDifficulty);
+                break;
+
+            case "training":
+                towerAgent = gameObject.AddComponent<TowerAgent_Training>();
+                SetTrainingModel(trainingDifficulty); // ← 自分で切り替える用
+                break;
+        }        
+        towerAgent.gameManager = this;
+        towerAgent.stageGenerator = stageGenerator;
+
         if (allPieces == null)
         {
             allPieces = new List<PieceController>(); // リストがnullのときのみ初期化
         }
         stageGenerator = FindObjectOfType<StageGenerator>();
-        towerAgent = FindObjectOfType<TowerAgent>();
         isPlayerTurn = true;
 
         // ML-Agentsがトレーニング中かどうかを確認
@@ -114,6 +136,22 @@ public class GameManager : MonoBehaviour
         // 必要なコンポーネントを取得
         raycaster = FindObjectOfType<GraphicRaycaster>();
         eventSystem = FindObjectOfType<EventSystem>();
+    }
+    void SetInferenceModel(string difficulty)
+    {
+        var param = towerAgent.GetComponent<BehaviorParameters>();
+        param.Model = Resources.Load<NNModel>($"Models/{difficulty}");
+        param.BehaviorType = BehaviorType.InferenceOnly;
+    }
+
+    void SetTrainingModel(string difficulty)
+    {
+        var param = towerAgent.GetComponent<BehaviorParameters>();
+        param.Model = null;
+        param.BehaviorType = BehaviorType.Default;
+
+        Debug.Log($"トレーニング対象のモデル: {difficulty}");
+        
     }
 
     void Update()
@@ -201,59 +239,7 @@ public class GameManager : MonoBehaviour
 
         if (isTrainingMode && towerAgent != null)
         {
-            
-            //easy
-            if(allPieces.Count >= 4 && allPieces.Count < 7)
-            {
-                towerAgent.AddReward(30.0f);
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            else
-            {
-                towerAgent.AddReward(-30.0f);
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            //easy
-
-            /*//nomal
-            if(allPieces.Count >= 7 && allPieces.Count < 10)
-            {
-                towerAgent.AddReward(30.0f);
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            else
-            {
-                towerAgent.AddReward(-20.0f);
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            *///nomal
-
-            /*
-            //hard
-            float rewardForStackedPieces = allPieces.Count * 2.0f;
-            towerAgent.AddReward(rewardForStackedPieces);
-            Debug.Log("ピース数報酬: " + rewardForStackedPieces);
-            towerAgent.AddReward(-30.0f); // ペナルティ
-            Debug.Log("ペナルティ報酬");
-            
-            if(allPieces.Count <= 6)//hard
-            {
-                towerAgent.AddReward(-30.0f);//easy
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            else if(allPieces.Count <= 10)
-            {
-                towerAgent.AddReward(-15.0f);//hard
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            else
-            {
-                towerAgent.AddReward(20.0f);//hard
-                towerAgent.EndEpisode(); // エピソード終了
-            }
-            */
-            //hard
-
+            towerAgent.HandleGameOver(allPieces.Count);
         }
         
         // ゲームの状態を停止またはリセットする処理を追加
@@ -272,6 +258,17 @@ public class GameManager : MonoBehaviour
             Invoke("Retry", 1.0f); // 1秒後にリトライ（少し待つことで安定）
         }
     }
+    public void ResetGame()
+    {
+        ClearAllPieces();
+        yOffset = 3.5f;
+        mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, yOffset - 3.5f, mainCamera.transform.position.z);
+        stageGenerator.GenerateStage();
+        SpawnPiece();
+        isPlayerTurn = true;
+        hasRequestedAction = false;
+    }
+
     public void BackToTitle()
     {        
         ClearAllPieces();
@@ -341,86 +338,10 @@ public class GameManager : MonoBehaviour
             // ピースが固定されている場合（通常のトレーニング処理）
             if (currentPiece.IsStationary())
             {
-                
-                //easy
-                
                 clickedTimeCounter = 0.0f;
-                towerAgent.AddReward(3.0f);
+                currentHighestPoint = CalculateTowerHeight();
+                towerAgent.HandlePieceStable(previousHighestPoint, currentHighestPoint, allPieces.Count);
                 hasRequestedAction = false;
-                Debug.Log("積み上げ成功");
-                currentHighestPoint = CalculateTowerHeight(); // ピースドロップ後の高さ
-
-                if(allPieces.Count >= 7)
-                {
-                    towerAgent.AddReward(-10.0f);
-                    Debug.Log("ピース数10");
-                }
-
-                
-                //easy
-
-                /*//nomal
-                clickedTimeCounter = 0.0f;
-                towerAgent.AddReward(5.0f);
-                hasRequestedAction = false;
-                Debug.Log("積み上げ成功");
-                currentHighestPoint = CalculateTowerHeight(); // ピースドロップ後の高さ
-
-                if(allPieces.Count >= 10)
-                {
-                    towerAgent.AddReward(-6.0f);
-                    Debug.Log("ピース数10");
-                }
-                //nomal
-                */
-
-                //hard
-                /*
-                clickedTimeCounter = 0.0f;
-                towerAgent.AddReward(5.0f);//hard
-                hasRequestedAction = false;
-                Debug.Log("積み上げ成功");
-                currentHighestPoint = CalculateTowerHeight(); // ピースドロップ後の高さ
-
-                if(allPieces.Count == 7)
-                {
-                    towerAgent.AddReward(5.0f);
-                    Debug.Log("ピース数7");
-                }
-                if(allPieces.Count == 10)
-                {
-                    towerAgent.AddReward(7.0f);
-                    Debug.Log("ピース数10");
-                }
-                if(allPieces.Count == 14)
-                {
-                    towerAgent.AddReward(10.0f);
-                    Debug.Log("ピース数14");
-                }
-
-                
-                if (previousHighestPoint - currentPiece.transform.position.y >= 0)
-                {
-                    towerAgent.AddReward(2.0f); // 安定性の報酬
-                    Debug.Log("安定性の報酬を追加: 2.0f");
-                }
-                else if (previousHighestPoint - currentPiece.transform.position.y < 0 && currentHighestPoint >= heightRewardThreshold)
-                {
-                    towerAgent.AddReward(3.0f); // 高さ更新の報酬
-                    Debug.Log("高さ更新の報酬を追加: 5.0f");
-                }
-                else if (previousHighestPoint - currentPiece.transform.position.y < 0 && currentHighestPoint >= heightRewardThreshold * 2)
-                {
-                    towerAgent.AddReward(5.0f); // 高さ更新の報酬(2)
-                    Debug.Log("高さ更新の報酬を追加(2): 10.0f");
-                }
-                else if (previousHighestPoint - currentPiece.transform.position.y < 0 && currentHighestPoint >= heightRewardThreshold * 3)
-                {
-                    towerAgent.AddReward(10.0f); // 高さ更新の報酬(3)
-                    Debug.Log("高さ更新の報酬を追加(3): 15.0f");
-                }
-                */
-                //hard
             }
             else
             {

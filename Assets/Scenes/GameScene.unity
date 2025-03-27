@@ -3303,7 +3303,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1467794267}
   - component: {fileID: 1467794266}
-  - component: {fileID: 1467794265}
+  - component: {fileID: 1467794268}
   m_Layer: 0
   m_Name: TowerAgent
   m_TagString: Untagged
@@ -3311,28 +3311,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1467794265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467794264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bea867489c172d4cbea0f57a88ca710, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agentParameters:
-    maxStep: 0
-  hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
-  currentPiece: {fileID: 0}
-  gameManager: {fileID: 2124257785}
-  stageGenerator: {fileID: 418725248}
-  currentPieceRigidbody: {fileID: 0}
-  currentPieceTransform: {fileID: 0}
-  behaviorParameters: {fileID: 0}
 --- !u!114 &1467794266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3378,6 +3356,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1467794268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467794264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7b051a074ce84f468ae0a2e8c91b6f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  currentPiece: {fileID: 0}
+  stageGenerator: {fileID: 0}
+  gameManager: {fileID: 2124257785}
+  currentPieceRigidbody: {fileID: 0}
+  currentPieceTransform: {fileID: 0}
 --- !u!1 &1469047761
 GameObject:
   m_ObjectHideFlags: 0
@@ -4672,9 +4671,10 @@ MonoBehaviour:
   winClip: {fileID: 8300000, guid: 86995d466305a2f4f9b0d6550371496c, type: 3}
   loseClip: {fileID: 8300000, guid: adb523db79f64734b8240d5f40487c08, type: 3}
   retryClip: {fileID: 8300000, guid: 634da3318424fd34fb82d156fb2773fe, type: 3}
-  towerAgent: {fileID: 0}
+  towerAgent: {fileID: 1467794268}
   isTrainingMode: 0
   hasRequestedAction: 0
+  trainingDifficulty: easy
   isPlayerTurn: 0
 --- !u!4 &2124257786
 Transform:
