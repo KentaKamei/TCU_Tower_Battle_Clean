@@ -37,8 +37,22 @@ public class TowerAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        float moveX = actions.ContinuousActions[0] * 5;
-        float rotationZ = actions.ContinuousActions[1] * 180;
+        float moveX = actions.ContinuousActions[0] * 5f;
+        float rotationZ = actions.ContinuousActions[1] * 180f;
+
+        // 難易度に応じてノイズを加える
+        string difficulty = gameManager.trainingDifficulty;
+        float noiseFactor = 0f;
+
+        if (difficulty == "easy")
+            noiseFactor = 1.0f;
+        else if (difficulty == "normal")
+            noiseFactor = 0.3f;
+        else if (difficulty == "hard")
+            noiseFactor = 0f;
+
+        moveX += Random.Range(-noiseFactor, noiseFactor);
+        rotationZ += Random.Range(-noiseFactor * 20f, noiseFactor * 20f); // 回転は少し荒く
 
         MovePiece(moveX);
         RotatePiece(rotationZ);
@@ -76,99 +90,25 @@ public class TowerAgent : Agent
 
     public void HandlePieceStable(float prevHeight, float newHeight, int pieceCount)
     {
-        string difficulty = gameManager.trainingDifficulty;
+        // 基本報酬：ピースを安定して積めた
+        AddReward(2.0f);
 
-        if (difficulty == "easy")
-        {
-            AddReward(3.0f);
-            if (pieceCount >= 7)
-            {
-                AddReward(-10.0f);
-            }
-        }
-        else if (difficulty == "normal")
-        {
-            AddReward(5.0f);
-            if (pieceCount >= 10)
-            {
-                AddReward(-6.0f);
-            }
-        }
-        else if (difficulty == "hard")
-        {
-            AddReward(5.0f);
-
-            if (pieceCount == 7)
-                AddReward(5.0f);
-            else if (pieceCount == 10)
-                AddReward(7.0f);
-            else if (pieceCount == 14)
-                AddReward(10.0f);
-
-            if (prevHeight - currentPieceTransform.position.y >= 0)
-            {
-                AddReward(2.0f); // 安定性の報酬
-            }
-            else if (newHeight >= 6.0f)
-            {
-                AddReward(3.0f);
-            }
-            else if (newHeight >= 12.0f)
-            {
-                AddReward(5.0f);
-            }
-            else if (newHeight >= 18.0f)
-            {
-                AddReward(10.0f);
-            }
-        }
+        // 高さが前より伸びたらご褒美（高く積む誘導）
+        if (newHeight > prevHeight + 0.5f)
+            AddReward(2.0f);
     }
+    
 
     public void HandleGameOver(int pieceCount)
     {
-        string difficulty = gameManager.trainingDifficulty;
+        // 単純に「どれだけ積めたか」に応じた報酬（積んだピース数）
+        float reward = pieceCount * 1.5f;
 
-        if (difficulty == "easy")
-        {
-            if (pieceCount >= 4 && pieceCount < 7)
-            {
-                AddReward(30.0f);
-            }
-            else
-            {
-                AddReward(-30.0f);
-            }
-        }
-        else if (difficulty == "normal")
-        {
-            if (pieceCount >= 7 && pieceCount < 10)
-            {
-                AddReward(30.0f);
-            }
-            else
-            {
-                AddReward(-20.0f);
-            }
-        }
-        else if (difficulty == "hard")
-        {
-            float rewardForStackedPieces = pieceCount * 2.0f;
-            AddReward(rewardForStackedPieces);
-            AddReward(-30.0f); // ベースペナルティ
+        AddReward(reward);
 
-            if (pieceCount <= 6)
-            {
-                AddReward(-30.0f);
-            }
-            else if (pieceCount <= 10)
-            {
-                AddReward(-15.0f);
-            }
-            else
-            {
-                AddReward(20.0f);
-            }
-        }
+        // 例：めっちゃ少ないと軽くマイナス（ミスっぽさ）
+        if (pieceCount < 3)
+            AddReward(-10.0f);
 
         EndEpisode();
     }
